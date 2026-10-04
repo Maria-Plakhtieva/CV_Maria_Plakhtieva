@@ -2,12 +2,16 @@ name: Build CV
 on:
   push:
     branches: [main]
-    paths: ['**.tex']
+    paths: ['**.tex', '**.cls', '.github/workflows/**']
 permissions:
   contents: write
+  pages: write
+  id-token: write
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
     steps:
       - uses: actions/checkout@v6
       - uses: xu-cheng/latex-action@v4
@@ -17,3 +21,8 @@ jobs:
         with:
           tag_name: latest
           files: Maria_Plakhtieva_CV.pdf
+      - run: mkdir site && cp Maria_Plakhtieva_CV.pdf site/
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+      - uses: actions/deploy-pages@v4
